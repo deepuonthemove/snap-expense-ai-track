@@ -45,7 +45,7 @@ const Index = () => {
 
       const formattedExpenses: Expense[] = data.map(expense => ({
         id: expense.id,
-        amount: parseFloat(expense.amount),
+        amount: expense.amount,
         description: expense.description,
         category: expense.category,
         date: expense.date,
@@ -68,7 +68,7 @@ const Index = () => {
         .insert([
           {
             user_id: user?.id,
-            amount: expense.amount.toString(),
+            amount: expense.amount,
             description: expense.description,
             category: expense.category,
             date: expense.date,
