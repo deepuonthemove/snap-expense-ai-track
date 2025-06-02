@@ -80,18 +80,20 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose }) => 
     await new Promise(resolve => setTimeout(resolve, 2000));
     
     // Mock AI extraction - in a real app, this would call an OCR/AI service
+    const categories = ['Food & Dining', 'Transportation', 'Shopping', 'Entertainment', 'Health', 'General'];
+    const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+    
     const mockExpense: Expense = {
       id: Date.now().toString(),
       amount: Math.floor(Math.random() * 100) + 10,
-      description: 'Receipt scan - ' + new Date().toLocaleDateString(),
-      category: 'General',
+      description: `Receipt scan - ${new Date().toLocaleDateString()}`,
+      category: randomCategory,
       date: new Date().toISOString().split('T')[0],
       imageUrl: capturedImage,
     };
 
     setIsProcessing(false);
-    onCapture(mockExpense);
-    toast.success('Receipt processed successfully!');
+    await onCapture(mockExpense);
     onClose();
   };
 
