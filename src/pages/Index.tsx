@@ -68,7 +68,7 @@ const Index = () => {
         .insert([
           {
             user_id: user?.id,
-            amount: expense.amount,
+            amount: expense.amount.toString(),
             description: expense.description,
             category: expense.category,
             date: expense.date,
