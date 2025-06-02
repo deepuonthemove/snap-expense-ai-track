@@ -34,6 +34,7 @@ const Index = () => {
 
   const fetchExpenses = async () => {
     try {
+      console.log('Fetching expenses for user:', user?.id);
       const { data, error } = await supabase
         .from('expenses')
         .select('*')
@@ -42,6 +43,8 @@ const Index = () => {
       if (error) {
         throw error;
       }
+
+      console.log('Raw expenses data:', data);
 
       const formattedExpenses: Expense[] = data.map(expense => ({
         id: expense.id,
@@ -52,6 +55,7 @@ const Index = () => {
         imageUrl: expense.image_url,
       }));
 
+      console.log('Formatted expenses:', formattedExpenses);
       setExpenses(formattedExpenses);
     } catch (error) {
       console.error('Error fetching expenses:', error);
@@ -63,20 +67,24 @@ const Index = () => {
 
   const addExpense = async (expense: Expense) => {
     try {
+      console.log('Adding expense:', expense);
+      const expenseData = {
+        user_id: user?.id,
+        amount: expense.amount,
+        description: expense.description,
+        category: expense.category,
+        date: expense.date,
+        image_url: expense.imageUrl || null,
+      };
+      
+      console.log('Expense data to insert:', expenseData);
+
       const { error } = await supabase
         .from('expenses')
-        .insert([
-          {
-            user_id: user?.id,
-            amount: expense.amount,
-            description: expense.description,
-            category: expense.category,
-            date: expense.date,
-            image_url: expense.imageUrl,
-          }
-        ]);
+        .insert([expenseData]);
 
       if (error) {
+        console.error('Supabase insert error:', error);
         throw error;
       }
 

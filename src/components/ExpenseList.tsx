@@ -42,46 +42,56 @@ const ExpenseList: React.FC<ExpenseListProps> = ({ expenses }) => {
 
   return (
     <div className="space-y-3">
-      {expenses.map((expense) => (
-        <Card key={expense.id} className="border border-gray-200 hover:shadow-md transition-shadow duration-200">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                {expense.imageUrl ? (
-                  <div className="relative">
-                    <img 
-                      src={expense.imageUrl} 
-                      alt="Receipt"
-                      className="w-12 h-12 rounded-lg object-cover"
-                    />
-                    <Camera className="absolute -top-1 -right-1 h-4 w-4 text-green-600 bg-white rounded-full p-0.5" />
+      {expenses.map((expense) => {
+        console.log('Rendering expense with imageUrl:', expense.imageUrl);
+        return (
+          <Card key={expense.id} className="border border-gray-200 hover:shadow-md transition-shadow duration-200">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  {expense.imageUrl ? (
+                    <div className="relative">
+                      <img 
+                        src={expense.imageUrl} 
+                        alt="Receipt"
+                        className="w-12 h-12 rounded-lg object-cover"
+                        onError={(e) => {
+                          console.log('Image load error for:', expense.imageUrl);
+                          e.currentTarget.style.display = 'none';
+                        }}
+                        onLoad={() => {
+                          console.log('Image loaded successfully:', expense.imageUrl);
+                        }}
+                      />
+                      <Camera className="absolute -top-1 -right-1 h-4 w-4 text-green-600 bg-white rounded-full p-0.5" />
+                    </div>
+                  ) : (
+                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                      <Receipt className="h-6 w-6 text-gray-400" />
+                    </div>
+                  )}
+                  
+                  <div className="flex-1">
+                    <h4 className="font-medium text-gray-900">{expense.description}</h4>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Badge variant="secondary" className={getCategoryColor(expense.category)}>
+                        {expense.category}
+                      </Badge>
+                      <span className="text-sm text-gray-500">{formatDate(expense.date)}</span>
+                    </div>
                   </div>
-                ) : (
-                  <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                    <Receipt className="h-6 w-6 text-gray-400" />
-                  </div>
-                )}
+                </div>
                 
-                <div className="flex-1">
-                  <h4 className="font-medium text-gray-900">{expense.description}</h4>
-                  <div className="flex items-center gap-2 mt-1">
-                    <Badge variant="secondary" className={getCategoryColor(expense.category)}>
-                      {expense.category}
-                    </Badge>
-                    <span className="text-sm text-gray-500">{formatDate(expense.date)}</span>
+                <div className="text-right">
+                  <div className="text-lg font-semibold text-gray-900">
+                    ${expense.amount.toFixed(2)}
                   </div>
                 </div>
               </div>
-              
-              <div className="text-right">
-                <div className="text-lg font-semibold text-gray-900">
-                  ${expense.amount.toFixed(2)}
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+            </CardContent>
+          </Card>
+        );
+      })}
     </div>
   );
 };
